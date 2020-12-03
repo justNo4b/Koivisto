@@ -867,6 +867,9 @@ Score pvSearch(Board* b, Score alpha, Score beta, Depth depth, Depth ply, Thread
             if (lmr > MAX_PLY) {
                 lmr = 0;
             }
+            if (lmr>depth/2) {
+                lmr = depth / 2;
+            }   
             if (lmr > depth - 2) {
                 lmr = depth - 2;
             }
