@@ -20,13 +20,17 @@
 
 #define MAX_HISTORY_SCORE 512;
 
-void SearchData::updateHistories(Move m, Depth depth, MoveList* mv, bool side, Move previous) {
+void SearchData::updateHistories(Move m, Depth depth, MoveList* mv, bool side, Move previous, Move followup) {
     if (depth > 20)
         return;
     Move m2;
     
     Piece  prevPiece = getMovingPiece(previous) % 6;
     Square prevTo    = getSquareTo(previous);
+
+    Piece  followPiece = getMovingPiece(followup) % 6;
+    Square followTo    = getSquareTo(followup);
+
     Color  color     = getMovingPiece(m) / 6;
 
     for (int i = 0; i < mv->getSize(); i++) {
@@ -47,6 +51,9 @@ void SearchData::updateHistories(Move m, Depth depth, MoveList* mv, bool side, M
                 cmh[prevPiece][prevTo][color][movingPiece][squareTo] +=
                     (depth * depth + 5 * depth)
                     - (depth * depth + 5 * depth) * cmh[prevPiece][prevTo][color][movingPiece][squareTo] / MAX_HISTORY_SCORE;
+                fmh[followPiece][followTo][color][movingPiece][squareTo] +=
+                    (depth * depth + 5 * depth)
+                    - (depth * depth + 5 * depth) * fmh[followPiece][followTo][color][movingPiece][squareTo] / MAX_HISTORY_SCORE;
             }
 
             // we can return at this point because all moves searched are in front of this move
@@ -63,22 +70,28 @@ void SearchData::updateHistories(Move m, Depth depth, MoveList* mv, bool side, M
                 -(depth * depth + 5 * depth)
                 - (depth * depth + 5 * depth) * cmh[prevPiece][prevTo][color][movingPiece][squareTo]
                       / MAX_HISTORY_SCORE;
+            fmh[followPiece][followTo][color][movingPiece][squareTo] +=
+                -(depth * depth + 5 * depth)
+                - (depth * depth + 5 * depth) * fmh[followPiece][followTo][color][movingPiece][squareTo]
+                      / MAX_HISTORY_SCORE;
         }
     }
     return;
 }
 
-int SearchData::getHistories(Move m, bool side, Move previous){
+int SearchData::getHistories(Move m, bool side, Move previous, Move followup){
     if (isCapture(m)){
         return captureHistory[side][getSquareFrom(m)][getSquareTo(m)];
     } else {
         Piece  prevPiece   = getMovingPiece(previous) % 6;
         Square prevTo      = getSquareTo(previous);
+        Piece  followPiece = getMovingPiece(followup) % 6;
+        Square followTo    = getSquareTo(followup);
         Color  color       = getMovingPiece(m) / 6;
         Piece  movingPiece = getMovingPiece(m) % 6;
         Square squareTo    = getSquareTo(m);
 
-        return cmh[prevPiece][prevTo][color][movingPiece][squareTo] + history[side][getSquareFrom(m)][getSquareTo(m)];
+        return fmh[followPiece][followTo][color][movingPiece][squareTo] + cmh[prevPiece][prevTo][color][movingPiece][squareTo] + history[side][getSquareFrom(m)][getSquareTo(m)];
     }
 }
 

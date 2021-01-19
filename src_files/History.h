@@ -37,6 +37,7 @@ struct SearchData {
     int   captureHistory[2][64][64] = {0};
     int   history[2][64][64]        = {0};    // history table (from-to)
     int   cmh[6][64][2][6][64]      = {0};    // counter move history table (prev_piece, prev_to, side, move_piece, move_to)
+    int   fmh[6][64][2][6][64]      = {0};    // followup move history table same indexing as above
     Move  killer[2][MAX_PLY]        = {0};
     Score eval[2][MAX_PLY]          = {0};
     bool  sideToReduce;
@@ -47,9 +48,9 @@ struct SearchData {
 
     virtual ~SearchData();
 
-    void updateHistories(Move m, Depth depth, MoveList* mv, bool side, Move previous);
+    void updateHistories(Move m, Depth depth, MoveList* mv, bool side, Move previous, Move followup);
 
-    int getHistories(Move m, bool side, Move previous);
+    int getHistories(Move m, bool side, Move previous, Move followup);
 
     void addHistoryScore(Move m, Depth depth, MoveList* mv, bool side);
 

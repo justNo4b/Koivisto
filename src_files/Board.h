@@ -63,13 +63,13 @@ struct BoardStatus {
     BoardStatus(const BoardStatus& a)
         : zobrist(a.zobrist), enPassantTarget(a.enPassantTarget), castlingRights(a.castlingRights),
           fiftyMoveCounter(a.fiftyMoveCounter), repetitionCounter(a.repetitionCounter), moveCounter(a.moveCounter),
-          move(a.move) {}
+          move(a.move), move2(a.move2) {}
 
     BoardStatus(U64 p_zobrist, U64 p_enPassantTarget, U64 p_metaInformation, U64 p_fiftyMoveCounter,
-                U64 p_repetitionCounter, U64 p_moveCounter, Move p_move)
+                U64 p_repetitionCounter, U64 p_moveCounter, Move p_move, Move p_move2)
         : zobrist(p_zobrist), enPassantTarget(p_enPassantTarget), castlingRights(p_metaInformation),
           fiftyMoveCounter(p_fiftyMoveCounter), repetitionCounter(p_repetitionCounter), moveCounter(p_moveCounter),
-          move(p_move) {}
+          move(p_move), move2(p_move2) {}
 
     U64  zobrist;
     U64  enPassantTarget;
@@ -78,11 +78,12 @@ struct BoardStatus {
     U64  repetitionCounter;
     U64  moveCounter;
     Move move;
+    Move move2;
 
     bool operator==(const BoardStatus& rhs) const {
         return zobrist == rhs.zobrist && enPassantTarget == rhs.enPassantTarget && castlingRights == rhs.castlingRights
                && fiftyMoveCounter == rhs.fiftyMoveCounter && repetitionCounter == rhs.repetitionCounter
-               && moveCounter == rhs.moveCounter && move == rhs.move;
+               && moveCounter == rhs.moveCounter && move == rhs.move && move2 == rhs.move2;
     }
 
     bool operator!=(const BoardStatus& rhs) const { return !(rhs == *this); }
@@ -96,7 +97,7 @@ struct BoardStatus {
 
     inline BoardStatus copy() {
         BoardStatus b {zobrist, enPassantTarget, castlingRights, fiftyMoveCounter, repetitionCounter, moveCounter,
-                       move};
+                       move, move2};
         return b;
     }
 };
@@ -199,6 +200,9 @@ class Board {
 
     // returns the previous move which lead to the current position. this is stored within the meta information.
     Move getPreviousMove();
+
+    // returns the previous previous move. this is stored within the meta information.
+    Move getPreviousMove2();
 
     // computes the static exchange evaluation for a given move. used the cache if defined.
     Score staticExchangeEvaluation(Move m);

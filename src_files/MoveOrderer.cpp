@@ -45,12 +45,12 @@ void MoveOrderer::setMovesPVSearch(move::MoveList* p_moves, move::Move hashMove,
                                + (getSquareTo(board->getPreviousMove()) == getSquareTo(m));
             if (SEE >= 0) {
                 if (mvvLVA == 0) {
-                    moves->scoreMove(i, 50000 + mvvLVA + sd->getHistories(m, board->getActivePlayer(), board->getPreviousMove()));
+                    moves->scoreMove(i, 50000 + mvvLVA + sd->getHistories(m, board->getActivePlayer(), board->getPreviousMove(), board->getPreviousMove2()));
                 } else {
-                    moves->scoreMove(i, 100000 + mvvLVA + sd->getHistories(m, board->getActivePlayer(), board->getPreviousMove()));
+                    moves->scoreMove(i, 100000 + mvvLVA + sd->getHistories(m, board->getActivePlayer(), board->getPreviousMove(), board->getPreviousMove2()));
                 }
             } else {
-                moves->scoreMove(i, 10000 + sd->getHistories(m, board->getActivePlayer(), board->getPreviousMove()));
+                moves->scoreMove(i, 10000 + sd->getHistories(m, board->getActivePlayer(), board->getPreviousMove(), board->getPreviousMove2()));
             }
         } else if (isPromotion(m)) {
             MoveScore mvvLVA = (getCapturedPiece(m) % 6) - (getMovingPiece(m) % 6);
@@ -58,7 +58,7 @@ void MoveOrderer::setMovesPVSearch(move::MoveList* p_moves, move::Move hashMove,
         } else if (sd->isKiller(m, ply, board->getActivePlayer())) {
             moves->scoreMove(i, 30000);
         } else {
-            moves->scoreMove(i, 20000 + sd->getHistories(m, board->getActivePlayer(), board->getPreviousMove()));
+            moves->scoreMove(i, 20000 + sd->getHistories(m, board->getActivePlayer(), board->getPreviousMove(), board->getPreviousMove2()));
         }
     }
 }

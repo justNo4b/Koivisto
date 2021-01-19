@@ -50,7 +50,7 @@ Board::Board(std::string fen) {
     }
 
     // we need to push a default board status.
-    BoardStatus boardStatus {0, 0, 0, 0, ONE, ONE, 0};
+    BoardStatus boardStatus {0, 0, 0, 0, ONE, ONE, 0, 0};
     this->m_boardStatusHistory.push_back(boardStatus);
 
     // using some string utilties defined in Util.h, we split the fen into parts.
@@ -386,7 +386,7 @@ void Board::move(Move m) {
                                       + 1,    // increment fifty move counter. might be reset
                                   1ULL,       // set rep to 1 (no rep)
                                   previousStatus->moveCounter + getActivePlayer(),    // increment move counter
-                                  m};
+                                  m, previousStatus->move};
 
     Square sqFrom = getSquareFrom(m);
     Square sqTo   = getSquareTo(m);
@@ -579,7 +579,8 @@ void Board::move_null() {
         previousStatus->fiftyMoveCounter + 1,
         1ULL,
         previousStatus->moveCounter + getActivePlayer(),
-        0ULL,
+        0ULL, 
+        previousStatus->move,
     };
 
     m_boardStatusHistory.emplace_back(std::move(newBoardStatus));
@@ -1144,6 +1145,16 @@ Move Board::getPreviousMove() {
     if (m_boardStatusHistory.empty())
         return 0;
     return m_boardStatusHistory.back().move;
+}
+
+/**
+ * returns the Move which lead to the previous position.
+ * @return
+ */
+Move Board::getPreviousMove2() {
+    if (m_boardStatusHistory.empty())
+        return 0;
+    return m_boardStatusHistory.back().move2;
 }
 
 /**
