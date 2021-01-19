@@ -630,7 +630,6 @@ Score pvSearch(Board* b, Score alpha, Score beta, Depth depth, Depth ply, Thread
     
     if (en.zobrist == zobrist && !skipMove) {
         hashMove = en.move;
-        if (en.type == ALL_NODE && ply > 0) hashMove = 0;
         // adjusting eval
         if ((en.type == PV_NODE) || (en.type == CUT_NODE && staticEval < en.score)
             || (en.type == ALL_NODE && staticEval > en.score)) {
@@ -721,7 +720,7 @@ Score pvSearch(Board* b, Score alpha, Score beta, Depth depth, Depth ply, Thread
     // internal iterative deepening by Ed Schröder::
     // http://talkchess.com/forum3/viewtopic.php?f=7&t=74769&sid=64085e3396554f0fba414404445b3120
     // **********************************************************************************************************
-    if (depth >= 4 && !hashMove)
+    if (depth >= 4 && (!hashMove || en.type == ALL_NODE))
         depth--;
     
     // **********************************************************************************************************
@@ -740,7 +739,7 @@ Score pvSearch(Board* b, Score alpha, Score beta, Depth depth, Depth ply, Thread
         if (beta <= matingValue)
             return matingValue;
     }
-    
+
     // we reuse movelists for memory reasons.
     MoveList* mv = sd->moves[ply];
     
