@@ -630,7 +630,7 @@ Score pvSearch(Board* b, Score alpha, Score beta, Depth depth, Depth ply, Thread
     
     if (en.zobrist == zobrist && !skipMove) {
         hashMove = en.move;
-        
+        if (en.type == ALL_NODE && ply > 0) hashMove = 0;
         // adjusting eval
         if ((en.type == PV_NODE) || (en.type == CUT_NODE && staticEval < en.score)
             || (en.type == ALL_NODE && staticEval > en.score)) {
