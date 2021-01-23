@@ -794,7 +794,8 @@ Score pvSearch(Board* b, Score alpha, Score beta, Depth depth, Depth ply, Thread
                     continue;
                 }
             }
-            
+
+            if (quiet && depth == 1 && b->isUnderAttack(getSquareTo(m), !b->getActivePlayer()) && !b->isUnderAttack(getSquareTo(m), b->getActivePlayer(), ONE << getSquareFrom(m))) continue; // See speedup. Changes bench as some rare xrays are different
             // ******************************************************************************************************
             // static exchange evaluation pruning (see pruning):
             // if the depth we are going to search the move at is small enough and the static exchange evaluation for the given move is very negative, dont
