@@ -911,7 +911,7 @@ Score pvSearch(Board* b, Score alpha, Score beta, Depth depth, Depth ply, Thread
         
         // depending on if lmr is used, we adjust the lmr score using history scores and kk-reductions.
         if (lmr) {
-            lmr = lmr - (sd->getHistories(m, b->getActivePlayer(), b->getPreviousMove()) + 300 /*(depth <= 10 ? 300 - 30*depth : 0)*/) / 150;
+            lmr = lmr - (sd->getHistories(m, b->getActivePlayer(), b->getPreviousMove()) + (depth <= 10 ? 300 - 30*depth : 0)) / 150;
             lmr += !isImproving;
             lmr -= pv;
             if (sd->isKiller(m, ply, b->getActivePlayer())) lmr--;
