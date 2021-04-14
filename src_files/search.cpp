@@ -1083,7 +1083,7 @@ Score qSearch(Board* b, Score alpha, Score beta, Depth ply, ThreadData* td, bool
             }
         }
     }
-    
+
     // the idea for the static evaluation is that if the last move has been a null move, we can reuse the eval and
     // simply adjust the tempo-bonus.
     Score stand_pat;
@@ -1111,6 +1111,15 @@ Score qSearch(Board* b, Score alpha, Score beta, Depth ply, ThreadData* td, bool
     if (alpha < bestScore)
         alpha = bestScore;
     
+    // Get our most valuable attacked piece
+    U64 oponentAttacks = sd->evaluator.allAttacks[!b->getActivePlayer()];
+    Piece type;
+    for (type = QUEEN; type >= 0; type--) {
+        if (oponentAttacks & b->getPieceBB(b->getActivePlayer(), type))
+            break;
+    }
+
+
     // extract all:
     //- captures (including e.p.)
     //- promotions
@@ -1135,7 +1144,7 @@ Score qSearch(Board* b, Score alpha, Score beta, Depth ply, ThreadData* td, bool
         if (!b->isLegal(m))
             continue;
         
-        if (see_piece_vals[(getCapturedPiece(m) % 8)] - see_piece_vals[(getMovingPiece(m) % 8)] - 300 + stand_pat > alpha)
+        if (!inCheck && see_piece_vals[(getCapturedPiece(m) % 8)] - std::max(see_piece_vals[(getMovingPiece(m) % 8)], see_piece_vals[type]) - 300 + stand_pat > alpha)
             return beta;
 
         // **********************************************************************************************************

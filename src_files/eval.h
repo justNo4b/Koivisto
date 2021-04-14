@@ -43,12 +43,12 @@ struct EvalData{
     
     U64 attacks [N_COLORS][N_PIECE_TYPES]{};
     U64 kingZone[N_COLORS]{};
-    
-    
 };
 
 class Evaluator {
     public:
+
+    U64 allAttacks[N_COLORS]{}; //reuse evaluation information in search
 
     float phase;
 

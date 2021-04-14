@@ -255,6 +255,10 @@ EvalScore Evaluator::computeHangingPieces(Board* b, EvalData* evalData) {
         WnotAttacked |= evalData->attacks[WHITE][i];
         BnotAttacked |= evalData->attacks[BLACK][i];
     }
+
+    allAttacks[WHITE] = WnotAttacked;
+    allAttacks[BLACK] = BnotAttacked;
+
     WnotAttacked = ~WnotAttacked;
     BnotAttacked = ~BnotAttacked;
     
