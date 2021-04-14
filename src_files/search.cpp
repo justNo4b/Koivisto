@@ -1144,8 +1144,11 @@ Score qSearch(Board* b, Score alpha, Score beta, Depth ply, ThreadData* td, bool
         if (!b->isLegal(m))
             continue;
         
-        if (!inCheck && see_piece_vals[(getCapturedPiece(m) % 8)] - std::max(see_piece_vals[(getMovingPiece(m) % 8)], see_piece_vals[type]) - 300 + stand_pat > alpha)
+        //bool flag = false; 
+
+        if (!inCheck && see_piece_vals[(getCapturedPiece(m) % 8)] - std::max(see_piece_vals[(getMovingPiece(m) % 8)], see_piece_vals[type]) - 300 + stand_pat > beta) {
             return beta;
+        }
 
         // **********************************************************************************************************
         // static exchange evaluation pruning (see pruning):
