@@ -1144,10 +1144,19 @@ Score qSearch(Board* b, Score alpha, Score beta, Depth ply, ThreadData* td, bool
         if (!b->isLegal(m))
             continue;
         
-        //bool flag = false; 
 
-        if (!inCheck && see_piece_vals[(getCapturedPiece(m) % 8)] - std::max(see_piece_vals[(getMovingPiece(m) % 8)], see_piece_vals[type]) - 300 + stand_pat > beta) {
+        if (!inCheck && see_piece_vals[(getCapturedPiece(m) % 8)] - std::max(see_piece_vals[(getMovingPiece(m) % 8)], see_piece_vals[type]) - 100 + stand_pat > beta) {
             return beta;
+            /*b->move(m);
+        
+            bool inCheckOpponent = b->isInCheck(b->getActivePlayer());
+
+            if(-qSearch(b, -beta, -alpha, ply + ONE_PLY, td, inCheckOpponent) < beta) {
+                b->undoMove();
+                std::cout << *b << std::endl << (int)beta << std::endl << (int)stand_pat << std::endl;
+            } else {
+                b->undoMove();
+            }*/
         }
 
         // **********************************************************************************************************
@@ -1158,14 +1167,16 @@ Score qSearch(Board* b, Score alpha, Score beta, Depth ply, ThreadData* td, bool
         if (!inCheck && (getCapturedPiece(m) % 8) < (getMovingPiece(m) % 8) && b->staticExchangeEvaluation(m) < 0)
             continue;
             
+
         b->move(m);
         
         bool inCheckOpponent = b->isInCheck(b->getActivePlayer());
 
         Score score = -qSearch(b, -beta, -alpha, ply + ONE_PLY, td, inCheckOpponent);
-        
+
         b->undoMove();
         
+
         if (score > bestScore) {
             bestScore = score;
             bestMove  = m;
