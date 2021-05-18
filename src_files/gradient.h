@@ -42,7 +42,7 @@
  */
 //#define TUNING
 #ifdef TUNING
-#define N_THREAD 16
+#define N_THREAD 10
 namespace tuning {
 
     inline double sigmoid(double s, double K) { return (double) 1 / (1 + exp(-K * s / 400)); }
@@ -74,7 +74,6 @@ namespace tuning {
 
         I_ROOK_OPEN_FILE,
         I_ROOK_HALF_OPEN_FILE,
-        I_ROOK_KING_LINE,
 
         I_BISHOP_DOUBLED,
         I_BISHOP_FIANCHETTO,
@@ -858,9 +857,6 @@ namespace tuning {
                 k = lsbReset(k);
             }
 
-            count[I_ROOK_KING_LINE] += (
-                    +bitCount(lookUpRookAttack(blackKingSquare, *b->getOccupiedBB()) & b->getPieceBB(WHITE, ROOK))
-                    - bitCount(lookUpRookAttack(whiteKingSquare, *b->getOccupiedBB()) & b->getPieceBB(BLACK, ROOK)));
             count[I_ROOK_OPEN_FILE] += (
                     +bitCount(openFiles & b->getPieceBB(WHITE, ROOK))
                     - bitCount(openFiles & b->getPieceBB(BLACK, ROOK)));
@@ -1443,7 +1439,7 @@ namespace tuning {
 
     void load_positions(const std::string &path, int count, int start=0) {
 
-        positions.reserve(positions.size() + count);
+        positions.reserve(30000000);
         fstream newfile;
         newfile.open(path, ios::in);
         Evaluator evaluator{};
@@ -1598,7 +1594,6 @@ namespace tuning {
                 "KNIGHT_DISTANCE_ENEMY_KING",
                 "ROOK_OPEN_FILE",
                 "ROOK_HALF_OPEN_FILE",
-                "ROOK_KING_LINE",
                 "BISHOP_DOUBLED",
                 "BISHOP_FIANCHETTO",
                 "BISHOP_PIECE_SAME_SQUARE_E",
